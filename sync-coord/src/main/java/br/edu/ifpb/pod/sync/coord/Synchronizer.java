@@ -12,8 +12,6 @@ import br.edu.ifpb.pod.sync.hash.GenerateHash;
 import br.edu.ifpb.pod.sync.mirror.MirrorManager;
 import br.edu.ifpb.pod.sync.repository.Repository;
 import java.rmi.RemoteException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * Classe que sincroniza os dados entre os bancos A (PostgreSQL), B(MySQL) e C
@@ -30,7 +28,7 @@ public class Synchronizer {
     private MirrorManager mirrorManager;
     private Repository repository;
 
-    public Synchronizer(DataService serviceA, DataService serviceB, DataService serviceC, TransationCoord transationCoord) {
+    public Synchronizer(DataService serviceA, DataService serviceB, DataService serviceC, TransationCoord transationCoord) throws RemoteException {
         this.serviceA = serviceA;
         this.serviceB = serviceB;
         this.serviceC = serviceC;
@@ -44,15 +42,11 @@ public class Synchronizer {
      * método que insere os dados de todos os bancos no repositorio de entidades
      * de cada banco de dado
      */
-    private void constructRepository() {
-        try {
-            repository = new Repository();
-            repository.setTeacherTOA(serviceA.listTeachers());
-            repository.setTeacherTOB(serviceB.listTeachers());
-            repository.setTeacherTOC(serviceC.listTeachers());
-        } catch (RemoteException ex) {
-            Logger.getLogger(Synchronizer.class.getName()).log(Level.SEVERE, null, ex);
-        }
+    private void constructRepository() throws RemoteException {
+        repository = new Repository();
+        repository.setTeacherTOA(serviceA.listTeachers());
+        repository.setTeacherTOB(serviceB.listTeachers());
+        repository.setTeacherTOC(serviceC.listTeachers());
     }
 
     /**

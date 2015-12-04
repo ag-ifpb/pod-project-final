@@ -43,7 +43,7 @@ public class SyncSchedule {
 
         public SyncTimer() {
             try {
-                System.setProperty("java.rmi.server.hostname", "200.129.71.228");
+                System.setProperty("java.rmi.server.hostname", "localhost");
                 this.serviceA = getService("DataServiceA", 10000);
                 this.serviceB = getService("DataServiceB", 10001);
                 this.serviceC = getService("DataServiceC", 10002);
@@ -65,8 +65,13 @@ public class SyncSchedule {
 
         @Override
         public void run() {
-            this.sync = new Synchronizer(serviceA, serviceB, serviceC, transationCoord);
-            this.sync.sync();
+            try {
+                this.sync = new Synchronizer(serviceA, serviceB, serviceC, transationCoord);
+                this.sync.sync();
+                System.out.println("Fim");
+            } catch (RemoteException ex) {
+                System.out.println("Sincronização Cancelada");
+            }
         }
 
     }

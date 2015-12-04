@@ -17,7 +17,7 @@ public class Main {
     public static void main(String[] args) {
 
         //No construtor é passado o tempo que a sicnrozinação deve ser executada repetidamente, nesse caso epecifico foi passado 5 minutos
-        new SyncSchedule(5 * 60);
+        new SyncSchedule(1);
     }
 
 }

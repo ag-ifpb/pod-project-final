@@ -3,27 +3,29 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package br.edu.ifpb.pod.aplication.service;
 
-import ag.ifpb.pod.rmi.core.DatastoreService;
-import ag.ifpb.pod.rmi.core.TeacherTO;
+import br.edu.ifpb.pod.core.entity.TeacherTO;
 import br.edu.ifpb.pod.core.dao.DAO;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 import javax.persistence.EntityManager;
 
 /**
  *
  * @author Emanuel Batista da Silva Filho - https://github.com/emanuelbatista
  */
-public class DataService extends UnicastRemoteObject implements DatastoreService{
-    
-    private DAO<Integer,TeacherTO> dao;
+public class DataService extends UnicastRemoteObject implements br.edu.ifpb.pod.core.remote.contract.DataService {
 
-    public DataService(EntityManager entityManager) throws RemoteException{
-        this.dao=new DAO(entityManager);
+    private DAO<Integer, TeacherTO> dao;
+
+    public DataService(EntityManager entityManager) throws RemoteException {
+        this.dao = new DAO(entityManager);
     }
 
     @Override
@@ -37,10 +39,13 @@ public class DataService extends UnicastRemoteObject implements DatastoreService
     }
 
     @Override
-    public List<TeacherTO> listTeachers() throws RemoteException {
-        return dao.findAll(TeacherTO.class);
+    public Map<Integer, TeacherTO> listTeachers() throws RemoteException {
+        List<TeacherTO> list = dao.findAll(TeacherTO.class);
+        Map<Integer, TeacherTO> map = new TreeMap<>();
+        list.forEach(x -> {
+            map.put(x.getCode(), x);
+        });
+        return map;
     }
-    
-    
 
 }

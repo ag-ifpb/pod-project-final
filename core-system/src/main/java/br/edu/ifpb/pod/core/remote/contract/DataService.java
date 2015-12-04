@@ -3,20 +3,22 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package br.edu.ifpb.pod.core.remote.contract;
 
-import ag.ifpb.pod.rmi.core.TeacherTO;
+import br.edu.ifpb.pod.core.entity.TeacherTO;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
-import java.util.List;
+import java.util.Map;
 
 /**
  *
  * @author Emanuel Batista da Silva Filho - https://github.com/emanuelbatista
  */
-public interface SyncLocal extends Remote{
+public interface DataService extends Remote{
 
-    public void syncEntity(List<TeacherTO> teacherTOs) throws RemoteException;
-    
+    void createTeacher(TeacherTO to) throws RemoteException;
+
+    void updateTeacher(TeacherTO to) throws RemoteException;
+
+    Map<Integer,TeacherTO> listTeachers() throws RemoteException;
 }

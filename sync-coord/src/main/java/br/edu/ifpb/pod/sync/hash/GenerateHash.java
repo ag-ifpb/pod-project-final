@@ -6,10 +6,12 @@
 
 package br.edu.ifpb.pod.sync.hash;
 
+import br.edu.ifpb.pod.core.entity.TeacherTO;
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -22,6 +24,20 @@ public class GenerateHash {
     public static String generateMD5(List<Object> objects){
         StringBuilder concat=new StringBuilder();
         objects.forEach(x->{
+            concat.append(x.toString());
+        });
+        try {
+            MessageDigest algorithm=MessageDigest.getInstance("MD5");
+            byte[] messageDigest=algorithm.digest(concat.toString().getBytes("UTF-8"));
+            return new String(messageDigest, "UTF-8");
+        } catch (NoSuchAlgorithmException | UnsupportedEncodingException ex) {
+            Logger.getLogger(GenerateHash.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
+    }
+    public static String generateMD5(Map<Integer, TeacherTO> objects){
+        StringBuilder concat=new StringBuilder();
+        objects.forEach((y,x)->{
             concat.append(x.toString());
         });
         try {

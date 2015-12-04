@@ -4,7 +4,7 @@
  * and open the template in the editor.
  */
 
-package br.edu.ifpb.pod.aplication.transation;
+package br.edu.ifpb.pod.aplication.service.transation;
 
 /**
  *

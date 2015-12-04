@@ -7,6 +7,8 @@
 package br.edu.ifpb.pod.sync.mirror;
 
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -37,16 +39,29 @@ public class MirrorManager {
         }
     }
     
+    private void save(){
+        try {
+            properties.store(new FileOutputStream(PATH.toFile()), null);
+        } catch (FileNotFoundException ex) {
+            Logger.getLogger(MirrorManager.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
+            Logger.getLogger(MirrorManager.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
     public void setProperty(String key,String value){
         properties.setProperty(key, value);
+        save();
     }
     
     public void remove(String key){
         properties.remove(key);
+        save();
     }
     
     public void setPropertiesMap(Map<String,String> map){
         properties.putAll(map);
+        save();
     }
     
     public String getProperty(String key){
@@ -55,6 +70,11 @@ public class MirrorManager {
     
     public boolean exits(String key){
         return properties.containsKey(key);
+    }
+    
+    public void removeAll(){
+        properties.clear();
+        save();
     }
     
 }

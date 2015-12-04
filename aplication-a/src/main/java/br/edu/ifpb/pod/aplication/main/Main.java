@@ -31,7 +31,7 @@ public class Main {
             EntityManager em = Persistence.createEntityManagerFactory(PERSISTENCE_UNIT).createEntityManager();
 
             Registry registry = LocateRegistry.createRegistry(9000);
-            registry.bind(TRANS_APP_A, new TransationAppA(em.getTransaction()));
+            registry.bind(TRANS_APP_A, new TransationAppA(em));
             registry = LocateRegistry.createRegistry(10000);
             registry.bind(DATA_SERVICE_A, new DataService(em));
             System.out.println("Servidor A iniciado");

@@ -6,8 +6,8 @@
 
 package br.edu.ifpb.pod.sync.repository;
 
-import ag.ifpb.pod.rmi.core.TeacherTO;
-import java.util.List;
+import br.edu.ifpb.pod.core.entity.TeacherTO;
+import java.util.Map;
 
 /**
  *
@@ -15,33 +15,35 @@ import java.util.List;
  */
 public class Repository {
     
-    private List<TeacherTO> teacherTOA;
-    private List<TeacherTO> teacherTOB;
-    private List<TeacherTO> teacherTOC;
-    
-    public List<TeacherTO> getTeacherTOA() {
+    private Map<Integer,TeacherTO> teacherTOA;
+    private Map<Integer,TeacherTO> teacherTOB;
+    private Map<Integer,TeacherTO> teacherTOC;
+
+    public Map<Integer, TeacherTO> getTeacherTOA() {
         return teacherTOA;
     }
 
-    public void setTeacherTOA(List<TeacherTO> teacherTOA) {
+    public void setTeacherTOA(Map<Integer, TeacherTO> teacherTOA) {
         this.teacherTOA = teacherTOA;
     }
 
-    public List<TeacherTO> getTeacherTOB() {
+    public Map<Integer, TeacherTO> getTeacherTOB() {
         return teacherTOB;
     }
 
-    public void setTeacherTOB(List<TeacherTO> teacherTOB) {
+    public void setTeacherTOB(Map<Integer, TeacherTO> teacherTOB) {
         this.teacherTOB = teacherTOB;
     }
 
-    public List<TeacherTO> getTeacherTOC() {
+    public Map<Integer, TeacherTO> getTeacherTOC() {
         return teacherTOC;
     }
 
-    public void setTeacherTOC(List<TeacherTO> teacherTOC) {
+    public void setTeacherTOC(Map<Integer, TeacherTO> teacherTOC) {
         this.teacherTOC = teacherTOC;
     }
+    
+    
 
         
     

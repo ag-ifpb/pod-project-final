@@ -5,7 +5,8 @@
  */
 package br.edu.ifpb.pod.sync.coord;
 
-import ag.ifpb.pod.rmi.core.DatastoreService;
+import br.edu.ifpb.pod.core.entity.TeacherTO;
+import br.edu.ifpb.pod.core.remote.contract.DataService;
 import br.edu.ifpb.pod.core.remote.contract.TransationCoord;
 import br.edu.ifpb.pod.sync.hash.GenerateHash;
 import br.edu.ifpb.pod.sync.mirror.MirrorManager;
@@ -20,14 +21,14 @@ import java.util.logging.Logger;
  */
 public class Synchronizer {
 
-    private DatastoreService serviceA;
-    private DatastoreService serviceB;
-    private DatastoreService serviceC;
+    private DataService serviceA;
+    private DataService serviceB;
+    private DataService serviceC;
     private TransationCoord transationCoord;
     private MirrorManager mirrorManager;
     private Repository repository;
 
-    public Synchronizer(DatastoreService serviceA, DatastoreService serviceB, DatastoreService serviceC, TransationCoord transationCoord) {
+    public Synchronizer(DataService serviceA, DataService serviceB, DataService serviceC, TransationCoord transationCoord) {
         this.serviceA = serviceA;
         this.serviceB = serviceB;
         this.serviceC = serviceC;
@@ -56,7 +57,7 @@ public class Synchronizer {
     }
 
     private void saveHashEntity() {
-        repository.getTeacherTOA().forEach(x -> {
+        repository.getTeacherTOA().forEach((y, x) -> {
             String hash = GenerateHash.generateMD5(x);
             mirrorManager.setProperty(String.valueOf(x.getCode()), hash);
         });
@@ -68,67 +69,83 @@ public class Synchronizer {
     }
 
     public void sync() {
-        if (haveChange()) {
+        boolean haveChange = haveChange();
+        boolean erro = false;
+        if (haveChange) {
             try {
                 replicationA();
                 replicationB();
                 replicationC();
-                repository.setTeacherTOA(serviceA.listTeachers());
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                erro = true;
+            }
+            if (!erro) {
+                mirrorManager.removeAll();
                 saveHashEntity();
                 saveHashDB();
-            } catch (RemoteException ex) {
-                Logger.getLogger(Synchronizer.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
     }
 
-    private void replicationA() {
-        repository.getTeacherTOA().forEach(x -> {
-            String code = String.valueOf(x.getCode());
+    private void replicationA() throws RemoteException {
+        for (TeacherTO teacher : repository.getTeacherTOA().values()) {
+            String code = String.valueOf(teacher.getCode());
             try {
-                transationCoord.beginAll();
                 if (!mirrorManager.exits(code)) {
-                    serviceB.createTeacher(x);
-                    serviceC.createTeacher(x);
-                } else if (!GenerateHash.generateMD5(x).equals(mirrorManager.getProperty(code))) {
-                    serviceB.updateTeacher(x);
-                    serviceC.updateTeacher(x);
+                    transationCoord.beginAll();
+                    serviceB.createTeacher(teacher);
+                    serviceC.createTeacher(teacher);
+                    transationCoord.commitAll();
+                } else if (!GenerateHash.generateMD5(teacher).equals(mirrorManager.getProperty(code))) {
+                    transationCoord.beginAll();
+                    serviceB.updateTeacher(teacher);
+                    serviceC.updateTeacher(teacher);
+                    transationCoord.commitAll();
                 }
-                transationCoord.commitAll();
+            } catch (Exception ex) {
                 transationCoord.rollbackAll();
-            } catch (RemoteException ex) {
-                Logger.getLogger(Synchronizer.class.getName()).log(Level.SEVERE, null, ex);
+                ex.printStackTrace();
+
             }
 
-        });
+        }
     }
 
-    private void replicationB() {
-        repository.getTeacherTOB().forEach(x -> {
-            String code = String.valueOf(x.getCode());
-            if (!mirrorManager.getProperty(code).equals(GenerateHash.generateMD5(x))) {
+    private void replicationB() throws RemoteException {
+        for (TeacherTO teacher : repository.getTeacherTOB().values()) {
+            String code = String.valueOf(teacher.getCode());
+            if (mirrorManager.exits(code) && !mirrorManager.getProperty(code).equals(GenerateHash.generateMD5(teacher))) {
                 try {
-                    serviceA.updateTeacher(x);
-                    serviceC.updateTeacher(x);
-                } catch (RemoteException ex) {
-                    Logger.getLogger(Synchronizer.class.getName()).log(Level.SEVERE, null, ex);
+                    transationCoord.beginAll();
+                    serviceA.updateTeacher(teacher);
+                    repository.getTeacherTOA().replace(teacher.getCode(), teacher);
+                    serviceC.updateTeacher(teacher);
+                    transationCoord.commitAll();
+                } catch (Exception e) {
+                    transationCoord.rollbackAll();
+                    e.printStackTrace();
                 }
             }
-        });
+        }
     }
 
-    private void replicationC() {
-        repository.getTeacherTOC().forEach(x -> {
-            String code = String.valueOf(x.getCode());
-            if (!mirrorManager.getProperty(code).equals(GenerateHash.generateMD5(x))) {
+    private void replicationC() throws RemoteException {
+        for (TeacherTO teacher : repository.getTeacherTOC().values()) {
+            String code = String.valueOf(teacher.getCode());
+            if (mirrorManager.exits(code) && !mirrorManager.getProperty(code).equals(GenerateHash.generateMD5(teacher))) {
                 try {
-                    serviceA.updateTeacher(x);
-                    serviceB.updateTeacher(x);
-                } catch (RemoteException ex) {
-                    Logger.getLogger(Synchronizer.class.getName()).log(Level.SEVERE, null, ex);
+                    transationCoord.beginAll();
+                    serviceA.updateTeacher(teacher);
+                    repository.getTeacherTOA().replace(teacher.getCode(), teacher);
+                    serviceB.updateTeacher(teacher);
+                    transationCoord.commitAll();
+                } catch (Exception e) {
+                    transationCoord.rollbackAll();
+                    e.printStackTrace();
                 }
             }
-        });
+        }
     }
 
     private boolean haveChange() {

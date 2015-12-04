@@ -44,7 +44,7 @@ public class Main {
     
     public static void main(String[] args) {
         try {
-            Registry registry=LocateRegistry.createRegistry(9003);
+            Registry registry=LocateRegistry.createRegistry(2010);
             registry.bind(TRANS_COORD, new TransationCoord(getTransationAppA(),getTransationAppB(),getTransationAppC()));
         } catch (RemoteException | AlreadyBoundException | NotBoundException ex) {
             Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);

@@ -1,4 +1,4 @@
-package ag.ifpb.pod.rmi.core;
+package br.edu.ifpb.pod.core.entity;
 
 import java.io.Serializable;
 import javax.persistence.Column;
@@ -7,8 +7,8 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "Professor")
-public class TeacherTO implements Serializable {
+@Table(name = "professor")
+public class TeacherTO implements Serializable,Comparable<TeacherTO> {
 
     @Id
     @Column(name = "codigo")
@@ -55,6 +55,11 @@ public class TeacherTO implements Serializable {
     @Override
     public String toString() {
         return "TeacherTO{" + "code=" + code + ", name=" + name + ", abbrev=" + abbrev + ", active=" + active + '}';
+    }
+
+    @Override
+    public int compareTo(TeacherTO o) {
+        return this.getCode()-o.getCode();
     }
     
     

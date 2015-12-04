@@ -4,8 +4,9 @@
  * and open the template in the editor.
  */
 
-package br.edu.ifpb.pod.aplication.transation;
+package br.edu.ifpb.pod.aplication.remote.transation;
 
+import br.edu.ifpb.pod.aplication.service.transation.Transation;
 import br.edu.ifpb.pod.core.remote.contract.TransationApp;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;

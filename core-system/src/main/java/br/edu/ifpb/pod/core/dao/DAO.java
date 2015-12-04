@@ -9,6 +9,9 @@ package br.edu.ifpb.pod.core.dao;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
+import org.eclipse.persistence.config.CacheUsage;
+import org.eclipse.persistence.config.HintValues;
+import org.eclipse.persistence.config.QueryHints;
 
 /**
  *
@@ -36,6 +39,7 @@ public class DAO <K,T>{
     
     public List<T> findAll(Class<T> t){
         TypedQuery<T> query=em.createQuery("SELECT t FROM "+t.getSimpleName()+" t",t);
+        query.setHint(QueryHints.REFRESH, HintValues.TRUE);
         return query.getResultList();
     }
 }

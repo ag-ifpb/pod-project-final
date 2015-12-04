@@ -3,42 +3,43 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package br.edu.ifpb.pod.aplication.transation;
 
 import br.edu.ifpb.pod.core.remote.contract.TransationApp;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
-import javax.persistence.EntityTransaction;
+import javax.persistence.EntityManager;
 
 /**
  *
  * @author Emanuel Batista da Silva Filho - https://github.com/emanuelbatista
  */
-public class TransationAppB extends UnicastRemoteObject implements TransationApp{
-    
-    private final EntityTransaction transaction;
+public class TransationAppB extends UnicastRemoteObject implements TransationApp {
 
-    public TransationAppB(EntityTransaction transaction) throws RemoteException{
+    private final EntityManager em;
+
+    public TransationAppB(EntityManager em) throws RemoteException {
         super();
-        this.transaction=transaction;
+        this.em = em;
     }
-    
-    
 
     @Override
     public void begin() throws RemoteException {
-        transaction.begin();
+        this.em.getTransaction().begin();
     }
 
     @Override
     public void commit() throws RemoteException {
-        transaction.commit();
+        try {
+            this.em.getTransaction().commit();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
     public void rollback() throws RemoteException {
-        transaction.rollback();
+        this.em.getTransaction().rollback();
     }
 
 }

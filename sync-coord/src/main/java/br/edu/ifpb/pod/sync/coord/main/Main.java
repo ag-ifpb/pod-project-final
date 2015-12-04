@@ -14,6 +14,7 @@ import br.edu.ifpb.pod.sync.coord.timer.SyncSchedule;
  */
 public class Main {
     public static void main(String[] args) {
+        
         new SyncSchedule(5*60);
     }
     

@@ -6,7 +6,8 @@
 package br.edu.ifpb.pod.aplication.main;
 
 import br.edu.ifpb.pod.aplication.service.DataServiceAdapter;
-import br.edu.ifpb.pod.aplication.transation.TransAppC;
+import br.edu.ifpb.pod.aplication.remote.transation.TransAppC;
+import br.edu.ifpb.pod.aplication.service.transation.TransationLocal;
 import java.rmi.AlreadyBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
@@ -21,15 +22,15 @@ import java.util.logging.Logger;
 public class Main {
 
     private static final String TRANS_APP_C = "TransAppC";
-    private static final String DATA_SERVICE_C = "DataServiceB";
+    private static final String DATA_SERVICE_C = "DataServiceC";
 
     public static void main(String[] args) {
         try {
             DataServiceAdapter serviceAdapter = new DataServiceAdapter();
-            Registry registry = LocateRegistry.createRegistry(9002);
-            registry.bind(TRANS_APP_C, new TransAppC(serviceAdapter.getTransation()));
-            registry = LocateRegistry.createRegistry(10002);
+            Registry registry = LocateRegistry.createRegistry(10002);
             registry.bind(DATA_SERVICE_C, serviceAdapter);
+            registry = LocateRegistry.createRegistry(9002);
+            registry.bind(TRANS_APP_C, new TransAppC(new TransationLocal(serviceAdapter)));
             System.out.println("Servidor C iniciado");
         } catch (RemoteException | AlreadyBoundException ex) {
             Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);

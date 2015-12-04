@@ -33,7 +33,7 @@ public class Main {
             EntityManager em=Persistence.createEntityManagerFactory(PERSISTENCE_UNIT).createEntityManager();
             
             Registry registry=LocateRegistry.createRegistry(9001);
-            registry.bind(TRANS_APP_B, new TransationAppB(em.getTransaction()));
+//            registry.bind(TRANS_APP_B, new TransationAppB(em));
             registry=LocateRegistry.createRegistry(10001);
             registry.bind(DATA_SERVICE_B, new DataService(em));
             

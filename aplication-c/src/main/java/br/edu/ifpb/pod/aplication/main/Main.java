@@ -16,6 +16,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
+ * Disponibiliza os serviços distribuidos de manipulação de entidades e
+ * transação do banco de dados que utiliza o banco C (Google Datastore)
  *
  * @author Emanuel Batista da Silva Filho - https://github.com/emanuelbatista
  */
@@ -24,6 +26,11 @@ public class Main {
     private static final String TRANS_APP_C = "TransAppC";
     private static final String DATA_SERVICE_C = "DataServiceC";
 
+    /**
+     * Método principal que disponibiliza os serviços distribuidos 
+     *
+     * @param args
+     */
     public static void main(String[] args) {
         try {
             DataServiceAdapter serviceAdapter = new DataServiceAdapter();

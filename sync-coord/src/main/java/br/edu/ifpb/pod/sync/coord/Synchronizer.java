@@ -16,6 +16,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
+ * Classe que sincroniza os dados entre os bancos A (PostgreSQL), B(MySQL) e C
+ * (Google Datastore)
  *
  * @author Emanuel Batista da Silva Filho - https://github.com/emanuelbatista
  */
@@ -35,9 +37,13 @@ public class Synchronizer {
         this.transationCoord = transationCoord;
         mirrorManager = new MirrorManager();
         constructRepository();
-        init();
+        initMirror();
     }
 
+    /**
+     * método que insere os dados de todos os bancos no repositorio de entidades
+     * de cada banco de dado
+     */
     private void constructRepository() {
         try {
             repository = new Repository();
@@ -49,13 +55,19 @@ public class Synchronizer {
         }
     }
 
-    private void init() {
+    /**
+     * método que salva o espelho de dado caso não tenha nada escrito no arquivo
+     */
+    private void initMirror() {
         if (mirrorManager.getProperty("checksum") == null) {
             saveHashDB();
             saveHashEntity();
         }
     }
 
+    /**
+     * salva o checksum de cada entidade no espelho do banco
+     */
     private void saveHashEntity() {
         repository.getTeacherTOA().forEach((y, x) -> {
             String hash = GenerateHash.generateMD5(x);
@@ -63,11 +75,18 @@ public class Synchronizer {
         });
     }
 
+    /**
+     * salva o checksum do bancos de dados sincronizado no espelho do banco
+     */
     private void saveHashDB() {
         String hashDB = GenerateHash.generateMD5(repository.getTeacherTOA());
         mirrorManager.setProperty("checksum", hashDB);
     }
 
+    /**
+     * sincroniza os dados entre os banco de dados A (PostgreSQL),B (MySQL),C
+     * (Google Datastore)
+     */
     public void sync() {
         boolean haveChange = haveChange();
         boolean erro = false;
@@ -77,7 +96,6 @@ public class Synchronizer {
                 replicationB();
                 replicationC();
             } catch (Exception ex) {
-                ex.printStackTrace();
                 erro = true;
             }
             if (!erro) {
@@ -88,6 +106,11 @@ public class Synchronizer {
         }
     }
 
+    /**
+     * sincroniza os dados do banco A com os demais bancos de dados
+     *
+     * @throws RemoteException
+     */
     private void replicationA() throws RemoteException {
         for (TeacherTO teacher : repository.getTeacherTOA().values()) {
             String code = String.valueOf(teacher.getCode());
@@ -112,6 +135,11 @@ public class Synchronizer {
         }
     }
 
+    /**
+     * sincroniza os dados do banco B com os demais bancos de dados
+     *
+     * @throws RemoteException
+     */
     private void replicationB() throws RemoteException {
         for (TeacherTO teacher : repository.getTeacherTOB().values()) {
             String code = String.valueOf(teacher.getCode());
@@ -130,6 +158,11 @@ public class Synchronizer {
         }
     }
 
+    /**
+     * sincroniza os dados do banco C com os demais bancos de dados
+     *
+     * @throws RemoteException
+     */
     private void replicationC() throws RemoteException {
         for (TeacherTO teacher : repository.getTeacherTOC().values()) {
             String code = String.valueOf(teacher.getCode());
@@ -148,6 +181,12 @@ public class Synchronizer {
         }
     }
 
+    /**
+     * verifica se possui alguma mudança nos bancos de dados de acordo com
+     * espelho do banco
+     *
+     * @return
+     */
     private boolean haveChange() {
         String checksum = mirrorManager.getProperty("checksum");
 

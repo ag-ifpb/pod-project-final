@@ -18,6 +18,9 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
+ * Classe que executa o método de sincronização da classe {@link Synchronizer}, onde
+ * o mesmo é executado repetidamente de acordo com tempo em segundos passados no
+ * construtor
  *
  * @author Emanuel Batista da Silva Filho - https://github.com/emanuelbatista
  */
@@ -27,11 +30,11 @@ public class SyncSchedule {
 
     public SyncSchedule(int seconds) {
         this.timer = new Timer();
-        timer.schedule(new SyncTimer(),0, seconds * 1000);
+        timer.schedule(new SyncTimer(), 0, seconds * 1000);
     }
 
     private class SyncTimer extends TimerTask {
-        
+
         private DataService serviceA;
         private DataService serviceB;
         private DataService serviceC;
@@ -41,10 +44,10 @@ public class SyncSchedule {
         public SyncTimer() {
             try {
                 System.setProperty("java.rmi.server.hostname", "200.129.71.228");
-                this.serviceA=getService("DataServiceA", 10000);
-                this.serviceB=getService("DataServiceB", 10001);
-                this.serviceC=getService("DataServiceC", 10002);
-                this.transationCoord=getTransation("TransCoord", 2010);
+                this.serviceA = getService("DataServiceA", 10000);
+                this.serviceB = getService("DataServiceB", 10001);
+                this.serviceC = getService("DataServiceC", 10002);
+                this.transationCoord = getTransation("TransCoord", 2010);
             } catch (RemoteException | NotBoundException ex) {
                 Logger.getLogger(SyncSchedule.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -54,17 +57,16 @@ public class SyncSchedule {
             Registry registry = LocateRegistry.getRegistry(port);
             return (DataService) registry.lookup(servico);
         }
-        
-        private TransationCoord getTransation(String servico, int port) throws RemoteException, NotBoundException{
-             Registry registry = LocateRegistry.getRegistry(port);
+
+        private TransationCoord getTransation(String servico, int port) throws RemoteException, NotBoundException {
+            Registry registry = LocateRegistry.getRegistry(port);
             return (TransationCoord) registry.lookup(servico);
         }
 
         @Override
         public void run() {
-            this.sync=new Synchronizer(serviceA, serviceB, serviceC, transationCoord);
+            this.sync = new Synchronizer(serviceA, serviceB, serviceC, transationCoord);
             this.sync.sync();
-            System.out.println("Olá tudo bem");
         }
 
     }

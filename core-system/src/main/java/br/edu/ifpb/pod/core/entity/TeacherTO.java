@@ -6,19 +6,25 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+/**
+ * Representa a entidade Professor e o 
+ * objeto de transferência distribuido Professor
+ *
+ * @author Emanuel Batista da Silva Filho - https://github.com/emanuelbatista
+ */
 @Entity
 @Table(name = "professor")
-public class TeacherTO implements Serializable,Comparable<TeacherTO> {
+public class TeacherTO implements Serializable, Comparable<TeacherTO> {
 
     @Id
     @Column(name = "codigo")
     private int code;
-    @Column(name = "nome",length = 40,nullable = false)
+    @Column(name = "nome", length = 40, nullable = false)
     private String name;
-    @Column(name = "abreviacao",length = 14,nullable = false)
+    @Column(name = "abreviacao", length = 14, nullable = false)
     private String abbrev;
     @Column(name = "ativo")
-    private boolean active=true;
+    private boolean active = true;
 
     public int getCode() {
         return code;
@@ -59,8 +65,7 @@ public class TeacherTO implements Serializable,Comparable<TeacherTO> {
 
     @Override
     public int compareTo(TeacherTO o) {
-        return this.getCode()-o.getCode();
+        return this.getCode() - o.getCode();
     }
-    
-    
+
 }

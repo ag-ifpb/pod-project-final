@@ -11,6 +11,8 @@ import java.rmi.server.UnicastRemoteObject;
 import javax.persistence.EntityManager;
 
 /**
+ * Oferece os serviços de transação das entidades do banco de dados da aplicação
+ * que utiliza o banco <b>B</b> (MySQL)
  *
  * @author Emanuel Batista da Silva Filho - https://github.com/emanuelbatista
  */
@@ -23,11 +25,21 @@ public class TransationAppB extends UnicastRemoteObject implements TransationApp
         this.em = em;
     }
 
+    /**
+     * Inicia uma transação
+     *
+     * @throws RemoteException
+     */
     @Override
     public void begin() throws RemoteException {
         this.em.getTransaction().begin();
     }
 
+    /**
+     * Responsável por fazer o <i>commit</i> na transação
+     *
+     * @throws RemoteException
+     */
     @Override
     public void commit() throws RemoteException {
         try {
@@ -37,6 +49,11 @@ public class TransationAppB extends UnicastRemoteObject implements TransationApp
         }
     }
 
+    /**
+     * Responsável por fazer o <i>rollback</i> na transação
+     *
+     * @throws RemoteException
+     */
     @Override
     public void rollback() throws RemoteException {
         this.em.getTransaction().rollback();

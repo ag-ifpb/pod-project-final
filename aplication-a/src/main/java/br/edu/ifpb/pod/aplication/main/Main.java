@@ -17,6 +17,8 @@ import javax.persistence.EntityManager;
 import javax.persistence.Persistence;
 
 /**
+ * Disponibiliza os serviços distribuidos de manipulação de entidades e transação do 
+ * banco de dados que utiliza o banco A (PostgreSQL)
  *
  * @author Emanuel Batista da Silva Filho - https://github.com/emanuelbatista
  */
@@ -26,6 +28,11 @@ public class Main {
     private static final String TRANS_APP_A = "TransAppA";
     private static final String DATA_SERVICE_A = "DataServiceA";
 
+    /**
+     * Método principal que disponibiliza os serviços distribuidos 
+     *
+     * @param args
+     */
     public static void main(String[] args) {
         try {
             EntityManager em = Persistence.createEntityManagerFactory(PERSISTENCE_UNIT).createEntityManager();

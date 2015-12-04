@@ -15,6 +15,7 @@ import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -22,51 +23,72 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
+ * Oferece os serviços de manipulação da entidade Professor no banco de dados da
+ * aplicação que utiliza o banco <b>C</b> (Google Datastore)
  *
  * @author Emanuel Batista da Silva Filho - https://github.com/emanuelbatista
  */
 public class DataServiceAdapter extends UnicastRemoteObject implements DataService {
 
     private DatastoreService service;
-    private TeacherTO toManager;
+    private List<TeacherTO> toManager;
 
     public DataServiceAdapter() throws RemoteException {
         try {
             System.setProperty("java.rmi.server.hostname", "localhost");
             Registry registry = LocateRegistry.getRegistry("200.129.71.228", 9090);
             this.service = (DatastoreService) registry.lookup("DatastoreService");
+            this.toManager = new LinkedList<>();
         } catch (NotBoundException | AccessException ex) {
             Logger.getLogger(DataServiceAdapter.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
+    /**
+     * Salva a entidade professor no banco de dados
+     *
+     * @param to
+     * @throws RemoteException
+     */
     @Override
     public void createTeacher(TeacherTO to) throws RemoteException {
-        this.toManager = to;
+        this.toManager.add(to);
     }
 
+    /**
+     * Atualiza a entidade professor no banco de dados
+     *
+     * @param to
+     * @throws RemoteException
+     */
     @Override
     public void updateTeacher(TeacherTO to) throws RemoteException {
-        this.toManager = to;
+        this.toManager.add(to);
     }
 
+    /**
+     * Retorna todas as entidades de Professor no banco de dados
+     * 
+     * @return
+     * @throws RemoteException 
+     */
     @Override
-    public Map<Integer,TeacherTO> listTeachers() throws RemoteException {
-        Map<Integer,TeacherTO> map=new TreeMap<>();
+    public Map<Integer, TeacherTO> listTeachers() throws RemoteException {
+        Map<Integer, TeacherTO> map = new TreeMap<>();
         List<ag.ifpb.pod.rmi.core.TeacherTO> list = service.listTeachers();
         list.forEach(x -> {
-            TeacherTO teacher=ConvertTeacherTO.unmarshalling(x);
+            TeacherTO teacher = ConvertTeacherTO.unmarshalling(x);
             map.put(teacher.getCode(), teacher);
         });
         return map;
     }
 
-    public TeacherTO getToManager() {
+    public List<TeacherTO> getToManager() {
         return toManager;
     }
-    
-    
 
-    
+    public void setToManager(List<TeacherTO> toManager) {
+        this.toManager = toManager;
+    }
 
 }

@@ -17,7 +17,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- *
+ * Classe principal responsável por disponibilizar o serviço distribuido 
+ * da classe {@link TransationCoord}
  * @author Emanuel Batista da Silva Filho - https://github.com/emanuelbatista
  */
 public class Main {

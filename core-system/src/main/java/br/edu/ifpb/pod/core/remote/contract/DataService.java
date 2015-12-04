@@ -11,14 +11,16 @@ import java.rmi.RemoteException;
 import java.util.Map;
 
 /**
+ * Interface remota que define os serviços de manipulação da entidade Professor no
+ * banco de dados
  *
  * @author Emanuel Batista da Silva Filho - https://github.com/emanuelbatista
  */
-public interface DataService extends Remote{
+public interface DataService extends Remote {
 
     void createTeacher(TeacherTO to) throws RemoteException;
 
     void updateTeacher(TeacherTO to) throws RemoteException;
 
-    Map<Integer,TeacherTO> listTeachers() throws RemoteException;
+    Map<Integer, TeacherTO> listTeachers() throws RemoteException;
 }

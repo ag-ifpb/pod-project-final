@@ -12,7 +12,7 @@ import org.eclipse.persistence.config.HintValues;
 import org.eclipse.persistence.config.QueryHints;
 
 /**
- * Classe que acessa os dados dos bancos de dados relacional das aplicações que
+ * Classe que manipula os dados dos bancos de dados relacionais das aplicações que
  * utilização da especificação JPA (Java Persistence API)
  *
  * @author Emanuel Batista da Silva Filho - https://github.com/emanuelbatista

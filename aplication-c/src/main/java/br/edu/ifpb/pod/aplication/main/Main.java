@@ -17,7 +17,7 @@ import java.util.logging.Logger;
 
 /**
  * Disponibiliza os serviços distribuidos de manipulação de entidades e
- * transação do banco de dados que utiliza o banco C (Google Datastore)
+ * transação do banco de dados da aplicação que utiliza o banco C (Google Datastore)
  *
  * @author Emanuel Batista da Silva Filho - https://github.com/emanuelbatista
  */

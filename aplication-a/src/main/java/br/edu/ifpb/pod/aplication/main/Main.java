@@ -18,7 +18,7 @@ import javax.persistence.Persistence;
 
 /**
  * Disponibiliza os serviços distribuidos de manipulação de entidades e transação do 
- * banco de dados que utiliza o banco A (PostgreSQL)
+ * banco de dados da aplicação que utiliza o banco A (PostgreSQL)
  *
  * @author Emanuel Batista da Silva Filho - https://github.com/emanuelbatista
  */

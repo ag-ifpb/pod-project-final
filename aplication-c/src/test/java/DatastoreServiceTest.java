@@ -7,6 +7,8 @@
 import br.edu.ifpb.pod.aplication.service.DataServiceAdapter;
 import br.edu.ifpb.pod.core.remote.contract.DataService;
 import java.rmi.RemoteException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -30,8 +32,13 @@ public class DatastoreServiceTest {
     // TODO add test methods here.
     // The methods must be annotated with annotation @Test. For example:
     //
-//     @Test
+     @Test
      public void testConnection() {
-         assertNotNull(dataService);
+        try {
+            assertNotNull(dataService);
+            assertNotNull(dataService.listTeachers());
+        } catch (RemoteException ex) {
+            Logger.getLogger(DatastoreServiceTest.class.getName()).log(Level.SEVERE, null, ex);
+        }
      }
 }
